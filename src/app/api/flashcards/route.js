@@ -5,12 +5,6 @@ import { uploadFile } from '@/lib/storage';
 import fs from 'fs/promises';
 import path from 'path';
 import { PDFParse } from 'pdf-parse';
-import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-
-import { pathToFileURL } from 'node:url';
-
-// Setup pdf.worker.mjs path dynamically to prevent bundler chunk loaders errors in Next/Turbopack
-pdfjs.GlobalWorkerOptions.workerSrc = pathToFileURL(path.resolve(process.cwd(), 'node_modules', 'pdfjs-dist', 'legacy', 'build', 'pdf.worker.mjs')).toString();
 
 
 // Premium template flashcards used if Gemini API fails or if no Key is set

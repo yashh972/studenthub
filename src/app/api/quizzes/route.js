@@ -4,12 +4,6 @@ import { verifyJWT } from '@/lib/auth';
 import fs from 'fs/promises';
 import path from 'path';
 import { PDFParse } from 'pdf-parse';
-import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-
-import { pathToFileURL } from 'node:url';
-
-// Setup pdf.worker.mjs path dynamically to prevent bundler chunk loaders errors in Next/Turbopack
-pdfjs.GlobalWorkerOptions.workerSrc = pathToFileURL(path.resolve(process.cwd(), 'node_modules', 'pdfjs-dist', 'legacy', 'build', 'pdf.worker.mjs')).toString();
 
 
 // Comprehensive mock questions used as a fallback if no Gemini Key is set or if the API fails
