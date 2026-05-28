@@ -7,7 +7,9 @@ import prisma from '@/lib/prisma';
 import { verifyJWT } from '@/lib/auth';
 import fs from 'fs/promises';
 import path from 'path';
-import { PDFParse } from 'pdf-parse';
+
+// Use require to evaluate pdf-parse at runtime, ensuring our global.DOMMatrix stub is defined first
+const { PDFParse } = require('pdf-parse');
 
 
 // Comprehensive mock questions used as a fallback if no Gemini Key is set or if the API fails

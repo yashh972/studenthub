@@ -8,7 +8,9 @@ import { verifyJWT } from '@/lib/auth';
 import { uploadFile } from '@/lib/storage';
 import fs from 'fs/promises';
 import path from 'path';
-import { PDFParse } from 'pdf-parse';
+
+// Use require to evaluate pdf-parse at runtime, ensuring our global.DOMMatrix stub is defined first
+const { PDFParse } = require('pdf-parse');
 
 
 // Premium template flashcards used if Gemini API fails or if no Key is set
