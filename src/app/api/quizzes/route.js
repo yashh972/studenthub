@@ -133,10 +133,21 @@ export async function POST(request) {
 
     // 2. Extract Text from Note (handling PDFs vs Plain Text)
     let textMaterial = '';
-    if (note.pdfUrl && note.fileKey) {
+    if (note.pdfUrl) {
       try {
-        const filePath = path.join(process.cwd(), 'public', 'uploads', note.fileKey);
-        const dataBuffer = await fs.readFile(filePath);
+        let dataBuffer;
+        if (note.pdfUrl.startsWith('http')) {
+          // Production: Fetch PDF from Supabase Storage or external link
+          const response = await fetch(note.pdfUrl);
+          if (!response.ok) throw new Error(`Failed to fetch PDF from storage: ${response.statusText}`);
+          const arrayBuffer = await response.arrayBuffer();
+          dataBuffer = Buffer.from(arrayBuffer);
+        } else {
+          // Local Development: Read from disk
+          const filePath = path.join(process.cwd(), 'public', 'uploads', note.fileKey || path.basename(note.pdfUrl));
+          dataBuffer = await fs.readFile(filePath);
+        }
+
         const parser = new PDFParse({ data: dataBuffer });
         const parsed = await parser.getText();
         textMaterial = parsed.text || '';

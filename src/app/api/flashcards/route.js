@@ -112,16 +112,27 @@ export async function POST(request) {
 
       // Extract text content
       let textMaterial = '';
-      if (note.pdfUrl && note.fileKey) {
+      if (note.pdfUrl) {
         try {
-          const filePath = path.join(process.cwd(), 'public', 'uploads', note.fileKey);
-          const dataBuffer = await fs.readFile(filePath);
+          let dataBuffer;
+          if (note.pdfUrl.startsWith('http')) {
+            // Production: Fetch PDF from Supabase Storage or external link
+            const response = await fetch(note.pdfUrl);
+            if (!response.ok) throw new Error(`Failed to fetch PDF from storage: ${response.statusText}`);
+            const arrayBuffer = await response.arrayBuffer();
+            dataBuffer = Buffer.from(arrayBuffer);
+          } else {
+            // Local Development: Read from disk
+            const filePath = path.join(process.cwd(), 'public', 'uploads', note.fileKey || path.basename(note.pdfUrl));
+            dataBuffer = await fs.readFile(filePath);
+          }
+
           const parser = new PDFParse({ data: dataBuffer });
           const parsed = await parser.getText();
           textMaterial = parsed.text || '';
         } catch (err) {
           console.error('Flashcard PDF parse failed:', err);
-          return NextResponse.json({ error: 'Failed to extract text from PDF.' }, { status: 550 });
+          return NextResponse.json({ error: 'Failed to extract text from PDF.' }, { status: 500 });
         }
       } else {
         textMaterial = note.content || '';
