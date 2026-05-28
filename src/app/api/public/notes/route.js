@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifyJWT } from '@/lib/auth';
-import fs from 'fs/promises';
-import path from 'path';
+import { uploadFile } from '@/lib/storage';
 
 /**
  * GET /api/public/notes
@@ -79,15 +78,10 @@ export async function POST(request) {
         const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const filename = `${timestamp}-${safeName}`;
 
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-        const absolutePath = path.join(uploadDir, filename);
-
-        // Ensure upload directory exists
-        await fs.mkdir(uploadDir, { recursive: true });
-        await fs.writeFile(absolutePath, buffer);
-
-        pdfUrl = `/uploads/${filename}`;
-        fileKey = filename;
+        // Save using our robust storage helper (Supabase in production, local disk in dev)
+        const uploadResult = await uploadFile(buffer, filename, file.type || 'application/pdf');
+        pdfUrl = uploadResult.pdfUrl;
+        fileKey = uploadResult.fileKey;
 
         if (!title) {
           title = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
