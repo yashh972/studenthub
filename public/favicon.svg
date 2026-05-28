@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="50%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#3b82f6" />
+    </linearGradient>
+    
+    <!-- Accent Sparkle Gradient -->
+    <linearGradient id="sparkleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#67e8f9" />
+    </linearGradient>
+
+    <!-- Drop Shadow for Depth -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Glowing Outer Ring or Background Squircle -->
+  <rect x="16" y="16" width="480" height="480" rx="120" fill="url(#bgGrad)" filter="url(#glow)" />
+  
+  <!-- Subtle inner border for premium glassmorphism -->
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="none" stroke="rgba(255, 255, 255, 0.2)" stroke-width="8" />
+
+  <!-- Graduation Cap Silhouette -->
+  <g transform="translate(0, 10)">
+    <!-- Cap Rhombus (top part) -->
+    <polygon points="256,120 420,200 256,280 92,200" fill="#ffffff" filter="drop-shadow(0px 8px 16px rgba(0, 0, 0, 0.25))" />
+    
+    <!-- Skull Cap (bottom part) -->
+    <path d="M160,230 V310 C160,340 200,370 256,370 C312,370 352,340 352,310 V230 L256,280 Z" fill="#f1f5f9" filter="drop-shadow(0px 6px 12px rgba(0, 0, 0, 0.15))" />
+    
+    <!-- Tassel String and Hanging Part -->
+    <path d="M256,200 L370,250 V340 C370,350 380,360 390,360 C400,360 410,350 410,340 V245 Z" fill="#cbd5e1" />
+    <circle cx="410" cy="345" r="10" fill="#e2e8f0" />
+  </g>
+
+  <!-- Sparkle Accent (signifying AI / high performance) -->
+  <path d="M400,80 Q400,120 440,120 Q400,120 400,160 Q400,120 360,120 Q400,120 400,80 Z" fill="url(#sparkleGrad)" />
+  <circle cx="120" cy="120" r="16" fill="#67e8f9" opacity="0.6" />
+</svg>

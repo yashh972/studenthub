@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ==========================================================================
+   🔮 UNIVERSAL CRYSTAL LIGHT MODE OVERRIDES
+   ========================================================================== */
+body.light-theme {
+  background-color: #f8fafc !important; /* slate-50 */
+  background: #f8fafc !important;
+  color: #0f172a !important; /* slate-900 */
+}
+
+/* Glow bubbles opacity adjustment for light mode visibility */
+body.light-theme .blur-\[150px\],
+body.light-theme .blur-\[180px\],
+body.light-theme .blur-\[2xl\] {
+  opacity: 0.12 !important;
+}
+
+/* Global typography & header controls */
+body.light-theme .text-white,
+body.light-theme .text-slate-100,
+body.light-theme h1,
+body.light-theme h2,
+body.light-theme h3,
+body.light-theme h4,
+body.light-theme h5,
+body.light-theme h6,
+body.light-theme .group-hover\:text-white:hover {
+  color: #0f172a !important;
+}
+
+body.light-theme .text-slate-300,
+body.light-theme .text-slate-350,
+body.light-theme .text-slate-200 {
+  color: #1e293b !important; /* slate-800 */
+}
+
+body.light-theme .text-slate-400,
+body.light-theme .text-slate-450,
+body.light-theme .text-slate-500,
+body.light-theme .text-slate-550,
+body.light-theme .text-slate-650 {
+  color: #475569 !important; /* slate-600 */
+}
+
+/* Card and Navigation Panels background resets */
+body.light-theme .bg-slate-950,
+body.light-theme .bg-slate-900\/40,
+body.light-theme .bg-slate-900,
+body.light-theme .bg-slate-950\/70,
+body.light-theme .bg-slate-955,
+body.light-theme .bg-slate-950\/60,
+body.light-theme .bg-slate-950\/20,
+body.light-theme .bg-slate-900\/20,
+body.light-theme .bg-slate-900\/70,
+body.light-theme .bg-slate-950\/50,
+body.light-theme .bg-slate-950\/80,
+body.light-theme .bg-slate-955\/60,
+body.light-theme .bg-slate-955\/20 {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+/* Panel separations border resets */
+body.light-theme .border-slate-900,
+body.light-theme .border-slate-800,
+body.light-theme .border-slate-850,
+body.light-theme .border-slate-850\/60,
+body.light-theme .border-slate-800\/80,
+body.light-theme .border-slate-900\/50,
+body.light-theme .border-slate-700,
+body.light-theme .border-slate-75 {
+  border-color: #e2e8f0 !important; /* slate-200 */
+}
+
+body.light-theme .border-t,
+body.light-theme .border-b,
+body.light-theme .border-l,
+body.light-theme .border-r {
+  border-color: #e2e8f0 !important;
+}
+
+/* Form selectors styling resets */
+body.light-theme input,
+body.light-theme textarea,
+body.light-theme select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important; /* slate-300 */
+  color: #0f172a !important;
+}
+
+body.light-theme input::placeholder,
+body.light-theme textarea::placeholder {
+  color: #94a3b8 !important; /* slate-400 */
+}
+
+/* Inner shadow containers inside standard dialog components */
+body.light-theme .bg-slate-950\/60 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Classmate chat message bubble text contrast override */
+body.light-theme .bg-slate-900.border.border-slate-850.text-slate-200 {
+  background-color: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+/* Glowing green tags (Active states) contrast resets */
+body.light-theme .bg-emerald-950\/60,
+body.light-theme .bg-emerald-950\/40,
+body.light-theme .bg-emerald-950,
+body.light-theme .bg-emerald-900\/40 {
+  background-color: #dcfce7 !important; /* green-100 */
+  border-color: #bbf7d0 !important; /* green-200 */
+}
+body.light-theme .text-emerald-400,
+body.light-theme .text-emerald-300 {
+  color: #15803d !important; /* green-700 */
+}
+
+/* Glowing violet tags contrast resets */
+body.light-theme .bg-violet-950\/60,
+body.light-theme .bg-violet-950\/40,
+body.light-theme .bg-violet-950,
+body.light-theme .bg-violet-900\/30,
+body.light-theme .bg-violet-900\/40 {
+  background-color: #f5f3ff !important; /* violet-100 */
+  border-color: #ddd6fe !important; /* violet-200 */
+}
+body.light-theme .text-violet-400,
+body.light-theme .text-violet-300 {
+  color: #6d28d9 !important; /* violet-700 */
+}
+
+/* Glowing red banners overrides */
+body.light-theme .bg-red-950\/40,
+body.light-theme .bg-red-950\/20,
+body.light-theme .bg-red-950\/80,
+body.light-theme .bg-red-950\/60,
+body.light-theme .bg-red-950\/65 {
+  background-color: #fee2e2 !important; /* red-100 */
+  border-color: #fca5a5 !important; /* red-300 */
+}
+body.light-theme .text-red-400,
+body.light-theme .text-red-300 {
+  color: #b91c1c !important; /* red-700 */
+}
+
+/* Glowing amber banners overrides */
+body.light-theme .bg-amber-955\/30,
+body.light-theme .bg-amber-950\/45,
+body.light-theme .bg-amber-950\/30,
+body.light-theme .bg-amber-950\/60 {
+  background-color: #fef3c7 !important; /* amber-100 */
+  border-color: #fde68a !important; /* amber-300 */
+}
+body.light-theme .text-amber-400,
+body.light-theme .text-amber-300 {
+  color: #b45309 !important; /* amber-700 */
+}
+
+/* Logo header text gradient override in Light Mode */
+body.light-theme header span.bg-clip-text,
+body.light-theme .font-extrabold.text-xl.tracking-tight.bg-clip-text {
+  background-image: linear-gradient(to right, #7c3aed, #4f46e5) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+
+

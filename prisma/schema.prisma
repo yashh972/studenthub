@@ -1,0 +1,186 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String         @id @default(uuid())
+  email            String         @unique
+  passwordHash     String
+  name             String?
+  role             String         @default("user") // "user", "admin"
+  isBlocked        Boolean        @default(false)
+  isVerified       Boolean        @default(false) // 👈 New verification status
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  
+  notes            Note[]
+  sharedNotes      SharedNote[]   @relation("SharedWith")
+  pdfUploads       PdfUpload[]
+  quizSessions     QuizSession[]
+  flashcards       Flashcard[]
+  todos            Todo[]
+  focusSessions    FocusSession[]
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  communityMessages CommunityMessage[] @relation("CommunitySentMessages")
+  reportsCreated   Report[]       @relation("Reporter")
+  reportsReceived  Report[]       @relation("ReportedUser")
+  verificationOtp  VerificationOTP?
+}
+
+model Note {
+  id               String       @id @default(uuid())
+  title            String
+  content          String       @db.Text
+  isPublic         Boolean      @default(false)
+  isFeatured       Boolean      @default(false)
+  isHidden         Boolean      @default(false)
+  moderationStatus String       @default("pending") // "pending", "reviewed", "flagged", "resolved"
+  userId           String
+  user             User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pdfUrl           String?
+  fileKey          String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  sharedWith       SharedNote[]
+  flashcards       Flashcard[]
+  quizSessions     QuizSession[]
+  reports          Report[]     @relation("ReportedNote")
+}
+
+model SharedNote {
+  id               String   @id @default(uuid())
+  noteId           String
+  note             Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  sharedWithUserId String
+  sharedWithUser   User     @relation("SharedWith", fields: [sharedWithUserId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+
+  @@unique([noteId, sharedWithUserId])
+}
+
+model PdfUpload {
+  id               String         @id @default(uuid())
+  name             String
+  url              String
+  fileKey          String
+  extractedText    String?        @db.Text
+  isFeatured       Boolean        @default(false)
+  isHidden         Boolean        @default(false)
+  moderationStatus String         @default("pending") // "pending", "reviewed", "flagged", "resolved"
+  userId           String
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+  quizSessions     QuizSession[]
+  reports          Report[]       @relation("ReportedPdf")
+}
+
+model QuizSession {
+  id          String         @id @default(uuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  noteId      String?
+  note        Note?          @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  pdfUploadId String?
+  pdfUpload   PdfUpload?     @relation(fields: [pdfUploadId], references: [id], onDelete: SetNull)
+  score       Int            @default(0)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  questions   QuizQuestion[]
+}
+
+model QuizQuestion {
+  id            String      @id @default(uuid())
+  quizSessionId String
+  quizSession   QuizSession @relation(fields: [quizSessionId], references: [id], onDelete: Cascade)
+  question      String      @db.Text
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctAnswer String // "A", "B", "C", or "D"
+  createdAt     DateTime    @default(now())
+}
+
+model Flashcard {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  noteId    String?
+  note      Note?    @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  front     String   @db.Text
+  back      String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Todo {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task        String
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Message {
+  id           String   @id @default(uuid())
+  senderId     String
+  sender       User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId   String
+  receiver     User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  content      String   @db.Text
+  noteLinkId   String?  // Optional note link inside chat
+  createdAt    DateTime @default(now())
+}
+
+model FocusSession {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  duration    Int      // duration in seconds
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Report {
+  id             String     @id @default(uuid())
+  reporterId     String
+  reporter       User       @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedUserId String?
+  reportedUser   User?      @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  reportedNoteId String?
+  reportedNote   Note?      @relation("ReportedNote", fields: [reportedNoteId], references: [id], onDelete: Cascade)
+  reportedPdfId  String?
+  reportedPdf    PdfUpload? @relation("ReportedPdf", fields: [reportedPdfId], references: [id], onDelete: Cascade)
+  reason         String     @db.Text
+  status         String     @default("pending") // "pending", "reviewed", "resolved"
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model CommunityMessage {
+  id        String   @id @default(uuid())
+  senderId  String
+  sender    User     @relation("CommunitySentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  content   String   @db.Text
+  roomName  String   @default("global")
+  createdAt DateTime @default(now())
+}
+
+model VerificationOTP {
+  id        String   @id @default(uuid())
+  code      String
+  expiresAt DateTime
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
