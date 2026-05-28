@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { verifyJWT } from '@/lib/auth';
+import { uploadFile } from '@/lib/storage';
 import fs from 'fs/promises';
 import path from 'path';
 import { PDFParse } from 'pdf-parse';
